@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Alma Mater Streak</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Graduate&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --wool:#173326; --wool-2:#1f4433; --felt:#efe6cf; --felt-dim:#c9c0a8;
+  --gold:#e3a72f; --gold-deep:#b9821a; --red:#c8382c; --ink:#0f2219;
+  --btn:#224b38; --btn-hover:#2b5c45; --line:rgba(239,230,207,.18);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --wool:#efe6cf; --wool-2:#e5dabd; --felt:#173326; --felt-dim:#4b5e52;
+    --gold:#b9821a; --gold-deep:#8d6210; --red:#b02d22; --ink:#efe6cf;
+    --btn:#fbf6e8; --btn-hover:#fff; --line:rgba(23,51,38,.2);
+  }
+}
+:root[data-theme="dark"]{
+  --wool:#173326; --wool-2:#1f4433; --felt:#efe6cf; --felt-dim:#c9c0a8;
+  --gold:#e3a72f; --gold-deep:#b9821a; --red:#c8382c; --ink:#0f2219;
+  --btn:#224b38; --btn-hover:#2b5c45; --line:rgba(239,230,207,.18);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;min-height:100%;background:var(--wool);color:var(--felt);
+  font-family:"Barlow Condensed","Arial Narrow",Arial,sans-serif;font-size:1.15rem;line-height:1.35;
+  background-image:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),var(--line) calc(10% - 1px) 10%);
+  -webkit-font-smoothing:antialiased;
+}
+main{max-width:30rem;margin:0 auto;padding:1.25rem 1.25rem 2rem;display:flex;flex-direction:column;gap:1.25rem;min-height:100%}
+header{display:flex;justify-content:space-between;align-items:baseline;gap:1rem}
+h1{font-family:"Graduate",Georgia,serif;font-weight:400;font-size:1.35rem;letter-spacing:.02em;margin:0;line-height:1.1}
+.best{color:var(--felt-dim);font-size:1rem;white-space:nowrap}
+.best b{color:var(--gold);font-weight:700}
+
+/* the chenille patch */
+.patch{
+  align-self:center;width:9.5rem;height:9.5rem;border-radius:50%;
+  background:var(--gold);color:var(--ink);display:grid;place-items:center;
+  box-shadow:0 0 0 6px var(--wool),0 0 0 9px var(--felt);
+  position:relative;
+}
+.patch::before{content:"";position:absolute;inset:7px;border-radius:50%;border:2px dashed var(--gold-deep)}
+.patch .n{font-family:"Graduate",Georgia,serif;font-size:4.2rem;line-height:1;transform:translateY(.1rem)}
+.patch .l{position:absolute;bottom:1.35rem;font-weight:700;font-size:.95rem;letter-spacing:.04em}
+.patch.bump{animation:bump .35s ease}
+@keyframes bump{40%{transform:scale(1.08)}}
+
+.card{text-align:center;display:flex;flex-direction:column;gap:.35rem;min-height:5.5rem;justify-content:center}
+.pos{color:var(--felt-dim);font-size:1.05rem}
+.name{font-family:"Graduate",Georgia,serif;font-size:clamp(1.6rem,7vw,2.2rem);line-height:1.1;margin:0}
+.q{font-size:1.1rem}
+
+.clock{height:.7rem;background:var(--wool-2);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.clock i{display:block;height:100%;width:100%;background:var(--gold);transform-origin:left;border-radius:999px}
+.clock.low i{background:var(--red)}
+
+.choices{display:grid;grid-template-columns:1fr;gap:.6rem}
+.choices button{
+  font:inherit;font-weight:600;font-size:1.3rem;text-align:left;color:var(--felt);
+  background:var(--btn);border:1.5px solid var(--line);
+  padding:.85rem 1rem .85rem 3rem;cursor:pointer;position:relative;
+  clip-path:polygon(0 0,100% 0,calc(100% - 14px) 50%,100% 100%,0 100%);
+  min-height:3.4rem;
+}
+.choices button .k{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--gold);font-family:"Graduate",Georgia,serif;font-size:1rem}
+.choices button:hover:not(:disabled){background:var(--btn-hover)}
+.choices button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.choices button.right{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.choices button.right .k{color:var(--ink)}
+.choices button.wrong{background:var(--red);color:#fff;border-color:var(--red)}
+.choices button.wrong .k{color:#fff}
+.choices button:disabled{cursor:default}
+
+.panel{text-align:center;display:flex;flex-direction:column;gap:1rem;align-items:center}
+.panel p{margin:0;max-width:24rem}
+.lead{font-size:1.25rem}
+.muted{color:var(--felt-dim)}
+.cta{
+  font:inherit;font-weight:700;font-size:1.35rem;background:var(--gold);color:var(--ink);
+  border:0;padding:.85rem 2.25rem;border-radius:999px;cursor:pointer;min-width:12rem
+}
+.cta:hover{background:var(--felt);}
+.cta:focus-visible,.seg button:focus-visible,.theme:focus-visible{outline:3px solid var(--felt);outline-offset:3px}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:999px;padding:3px}
+.seg button{font:inherit;font-weight:600;font-size:1.05rem;background:none;border:0;color:var(--felt-dim);padding:.4rem 1rem;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--felt);color:var(--wool)}
+.reveal{font-family:"Graduate",Georgia,serif;font-size:1.5rem;color:var(--gold);line-height:1.15}
+.theme{background:none;border:0;color:var(--felt-dim);font:inherit;font-size:1rem;cursor:pointer;text-decoration:underline;text-underline-offset:3px;align-self:center;margin-top:auto}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion: reduce){.patch.bump{animation:none}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Alma Mater Streak</h1>
+    <span class="best">Best <b id="best">0</b></span>
+  </header>
+
+  <div class="patch" id="patch" aria-live="polite"><span class="n" id="streak">0</span><span class="l">streak</span></div>
+
+  <!-- start -->
+  <section class="panel" id="start">
+    <p class="lead">A Pro Bowler appears. Tap where he played college ball. Six seconds per player, one miss ends the run.</p>
+    <div class="seg" role="group" aria-label="Player pool">
+      <button type="button" data-pool="now" aria-pressed="true">Recent</button>
+      <button type="button" data-pool="all" aria-pressed="false">All eras</button>
+      <button type="button" data-pool="legend" aria-pressed="false">Legends</button>
+    </div>
+    <button class="cta" id="go" type="button">Start</button>
+    <p class="muted">Keys 1–4 work too.</p>
+  </section>
+
+  <!-- play -->
+  <section id="play" hidden>
+    <div class="card">
+      <div class="pos" id="pos"></div>
+      <h2 class="name" id="name"></h2>
+      <div class="q">went to college at…</div>
+    </div>
+    <div class="clock" id="clock" role="progressbar" aria-label="Time left" aria-valuemin="0" aria-valuemax="6"><i id="bar"></i></div>
+    <div class="choices" id="choices" style="margin-top:1rem"></div>
+  </section>
+
+  <!-- over -->
+  <section class="panel" id="over" hidden>
+    <p class="muted" id="why"></p>
+    <p class="reveal" id="reveal"></p>
+    <p class="lead" id="summary"></p>
+    <button class="cta" id="again" type="button">Play again</button>
+    <button class="theme" id="menu" type="button" style="margin-top:0">Change player pool</button>
+  </section>
+
+  <button class="theme" id="theme" type="button">Switch light/dark</button>
+</main>
+
+<script>
+// [name, position, college, alternate college (also attended) or "", era: "n" recent / "l" legend]
+const P=[
+["Patrick Mahomes","QB","Texas Tech","","n"],["Josh Allen","QB","Wyoming","","n"],["Lamar Jackson","QB","Louisville","","n"],
+["Joe Burrow","QB","LSU","Ohio State","n"],["Jalen Hurts","QB","Oklahoma","Alabama","n"],["Justin Herbert","QB","Oregon","","n"],
+["Dak Prescott","QB","Mississippi State","","n"],["Kirk Cousins","QB","Michigan State","","n"],["Aaron Rodgers","QB","California","","n"],
+["Matthew Stafford","QB","Georgia","","n"],["Jared Goff","QB","California","","n"],["Baker Mayfield","QB","Oklahoma","Texas Tech","n"],
+["Geno Smith","QB","West Virginia","","n"],["Tua Tagovailoa","QB","Alabama","","n"],["Trevor Lawrence","QB","Clemson","","n"],
+["C.J. Stroud","QB","Ohio State","","n"],["Brock Purdy","QB","Iowa State","","n"],["Jayden Daniels","QB","LSU","Arizona State","n"],
+["Jordan Love","QB","Utah State","","n"],["Sam Darnold","QB","USC","","n"],["Kyler Murray","QB","Oklahoma","Texas A&M","n"],
+["Derek Carr","QB","Fresno State","","n"],["Russell Wilson","QB","Wisconsin","NC State","n"],["Joe Flacco","QB","Delaware","Pittsburgh","n"],
+["Bo Nix","QB","Oregon","Auburn","n"],["Caleb Williams","QB","USC","Oklahoma","n"],["Deshaun Watson","QB","Clemson","","n"],
+["Tom Brady","QB","Michigan","","l"],["Peyton Manning","QB","Tennessee","","l"],["Drew Brees","QB","Purdue","","l"],
+["Ben Roethlisberger","QB","Miami (OH)","","l"],["Philip Rivers","QB","NC State","","l"],["Eli Manning","QB","Ole Miss","","l"],
+["Cam Newton","QB","Auburn","Florida","l"],
+["Saquon Barkley","RB","Penn State","","n"],["Derrick Henry","RB","Alabama","","n"],["Christian McCaffrey","RB","Stanford","","n"],
+["Jahmyr Gibbs","RB","Alabama","Georgia Tech","n"],["Bijan Robinson","RB","Texas","","n"],["Josh Jacobs","RB","Alabama","","n"],
+["Jonathan Taylor","RB","Wisconsin","","n"],["Nick Chubb","RB","Georgia","","n"],["Alvin Kamara","RB","Tennessee","Alabama","n"],
+["Austin Ekeler","RB","Western Colorado","","n"],["Kyren Williams","RB","Notre Dame","","n"],["James Cook","RB","Georgia","","n"],
+["De'Von Achane","RB","Texas A&M","","n"],["Breece Hall","RB","Iowa State","","n"],["Joe Mixon","RB","Oklahoma","","n"],
+["Aaron Jones","RB","UTEP","","n"],["Tony Pollard","RB","Memphis","","n"],["Kenneth Walker III","RB","Michigan State","Wake Forest","n"],
+["Adrian Peterson","RB","Oklahoma","","l"],["Marshawn Lynch","RB","California","","l"],["LaDainian Tomlinson","RB","TCU","","l"],
+["Barry Sanders","RB","Oklahoma State","","l"],["Ezekiel Elliott","RB","Ohio State","","l"],["Le'Veon Bell","RB","Michigan State","","l"],
+["Dalvin Cook","RB","Florida State","","l"],
+["Justin Jefferson","WR","LSU","","n"],["Ja'Marr Chase","WR","LSU","","n"],["Tyreek Hill","WR","West Alabama","Oklahoma State","n"],
+["CeeDee Lamb","WR","Oklahoma","","n"],["Amon-Ra St. Brown","WR","USC","","n"],["A.J. Brown","WR","Ole Miss","","n"],
+["Davante Adams","WR","Fresno State","","n"],["Puka Nacua","WR","BYU","Washington","n"],["Stefon Diggs","WR","Maryland","","n"],
+["DK Metcalf","WR","Ole Miss","","n"],["Mike Evans","WR","Texas A&M","","n"],["Cooper Kupp","WR","Eastern Washington","","n"],
+["DeVonta Smith","WR","Alabama","","n"],["Garrett Wilson","WR","Ohio State","","n"],["Chris Olave","WR","Ohio State","","n"],
+["Jaylen Waddle","WR","Alabama","","n"],["Nico Collins","WR","Michigan","","n"],["Terry McLaurin","WR","Ohio State","","n"],
+["Malik Nabers","WR","LSU","","n"],["Brian Thomas Jr.","WR","LSU","","n"],["Drake London","WR","USC","","n"],
+["Keenan Allen","WR","California","","n"],["Deebo Samuel","WR","South Carolina","","n"],["Tee Higgins","WR","Clemson","","n"],
+["DJ Moore","WR","Maryland","","n"],["Brandon Aiyuk","WR","Arizona State","","n"],["Jaxon Smith-Njigba","WR","Ohio State","","n"],
+["Zay Flowers","WR","Boston College","","n"],["Ladd McConkey","WR","Georgia","","n"],["DeAndre Hopkins","WR","Clemson","","n"],
+["Adam Thielen","WR","Minnesota State","","n"],
+["Calvin Johnson","WR","Georgia Tech","","l"],["Larry Fitzgerald","WR","Pittsburgh","","l"],["Randy Moss","WR","Marshall","","l"],
+["Jerry Rice","WR","Mississippi Valley State","","l"],["Julio Jones","WR","Alabama","","l"],["Odell Beckham Jr.","WR","LSU","","l"],
+["Antonio Brown","WR","Central Michigan","","l"],
+["Travis Kelce","TE","Cincinnati","","n"],["George Kittle","TE","Iowa","","n"],["Mark Andrews","TE","Oklahoma","","n"],
+["T.J. Hockenson","TE","Iowa","","n"],["Sam LaPorta","TE","Iowa","","n"],["Trey McBride","TE","Colorado State","","n"],
+["Brock Bowers","TE","Georgia","","n"],["Kyle Pitts","TE","Florida","","n"],["Evan Engram","TE","Ole Miss","","n"],
+["David Njoku","TE","Miami (FL)","","n"],["Dallas Goedert","TE","South Dakota State","","n"],["Darren Waller","TE","Georgia Tech","","n"],
+["Rob Gronkowski","TE","Arizona","","l"],["Tony Gonzalez","TE","California","","l"],["Jason Witten","TE","Tennessee","","l"],
+["Trent Williams","OT","Oklahoma","","n"],["Penei Sewell","OT","Oregon","","n"],["Lane Johnson","OT","Oklahoma","","n"],
+["Quenton Nelson","G","Notre Dame","","n"],["Zack Martin","G","Notre Dame","","n"],["Tristan Wirfs","OT","Iowa","","n"],
+["Creed Humphrey","C","Oklahoma","","n"],["Chris Lindstrom","G","Boston College","","n"],["Joe Thuney","G","NC State","","n"],
+["Laremy Tunsil","OT","Ole Miss","","n"],["Frank Ragnow","C","Arkansas","","n"],["Rashawn Slater","OT","Northwestern","","n"],
+["Tyler Smith","G","Tulsa","","n"],["Trey Smith","G","Tennessee","","n"],["Christian Darrisaw","OT","Virginia Tech","","n"],
+["Jason Kelce","C","Cincinnati","","l"],["Joe Thomas","OT","Wisconsin","","l"],
+["Myles Garrett","DE","Texas A&M","","n"],["T.J. Watt","OLB","Wisconsin","","n"],["Nick Bosa","DE","Ohio State","","n"],
+["Joey Bosa","OLB","Ohio State","","n"],["Micah Parsons","LB","Penn State","","n"],["Maxx Crosby","DE","Eastern Michigan","","n"],
+["Chris Jones","DT","Mississippi State","","n"],["Trey Hendrickson","DE","Florida Atlantic","","n"],["Danielle Hunter","DE","LSU","","n"],
+["Aidan Hutchinson","DE","Michigan","","n"],["Josh Hines-Allen","DE","Kentucky","","n"],["Brian Burns","DE","Florida State","","n"],
+["Dexter Lawrence","DT","Clemson","","n"],["Quinnen Williams","DT","Alabama","","n"],["Jalen Carter","DT","Georgia","","n"],
+["Cameron Heyward","DT","Ohio State","","n"],["Khalil Mack","OLB","Buffalo","","n"],["Will Anderson Jr.","DE","Alabama","","n"],
+["Jeffery Simmons","DT","Mississippi State","","n"],["Nik Bonitto","OLB","Oklahoma","","n"],["Montez Sweat","DE","Mississippi State","Michigan State","n"],
+["Za'Darius Smith","OLB","Kentucky","","n"],["Haason Reddick","OLB","Temple","","n"],["Rashan Gary","OLB","Michigan","","n"],
+["Justin Madubuike","DT","Texas A&M","","n"],["Vita Vea","DT","Washington","","n"],
+["Aaron Donald","DT","Pittsburgh","","l"],["Von Miller","OLB","Texas A&M","","l"],["J.J. Watt","DE","Wisconsin","Central Michigan","l"],
+["Calais Campbell","DE","Miami (FL)","","l"],["Reggie White","DE","Tennessee","","l"],["Lawrence Taylor","LB","North Carolina","","l"],
+["Julius Peppers","DE","North Carolina","","l"],["Michael Strahan","DE","Texas Southern","","l"],
+["Fred Warner","LB","BYU","","n"],["Roquan Smith","LB","Georgia","","n"],["Bobby Wagner","LB","Utah State","","n"],
+["Zack Baun","LB","Wisconsin","","n"],["Foyesade Oluokun","LB","Yale","","n"],["Demario Davis","LB","Arkansas State","","n"],
+["Lavonte David","LB","Nebraska","","n"],["Patrick Queen","LB","LSU","","n"],
+["Ray Lewis","LB","Miami (FL)","","l"],["Luke Kuechly","LB","Boston College","","l"],["Brian Urlacher","LB","New Mexico","","l"],
+["Shaquille Leonard","LB","South Carolina State","","l"],
+["Sauce Gardner","CB","Cincinnati","","n"],["Patrick Surtain II","CB","Alabama","","n"],["Jalen Ramsey","CB","Florida State","","n"],
+["Derek Stingley Jr.","CB","LSU","","n"],["Trent McDuffie","CB","Washington","","n"],["Kyle Hamilton","S","Notre Dame","","n"],
+["Derwin James","S","Florida State","","n"],["Minkah Fitzpatrick","S","Alabama","","n"],["Jessie Bates","S","Wake Forest","","n"],
+["Kerby Joseph","S","Illinois","","n"],["Budda Baker","S","Washington","","n"],["Antoine Winfield Jr.","S","Minnesota","","n"],
+["Xavier McKinney","S","Alabama","","n"],["Jaire Alexander","CB","Louisville","","n"],["Marlon Humphrey","CB","Alabama","","n"],
+["Darius Slay","CB","Mississippi State","","n"],["Denzel Ward","CB","Ohio State","","n"],["Devon Witherspoon","CB","Illinois","","n"],
+["Harrison Smith","S","Notre Dame","","n"],["Kevin Byard","S","Middle Tennessee","","n"],["Justin Simmons","S","Boston College","","n"],
+["Ed Reed","S","Miami (FL)","","l"],["Troy Polamalu","S","USC","","l"],["Charles Woodson","CB","Michigan","","l"],
+["Deion Sanders","CB","Florida State","","l"],["Darrelle Revis","CB","Pittsburgh","","l"],["Richard Sherman","CB","Stanford","","l"],
+["Tyrann Mathieu","S","LSU","","l"],
+["Justin Tucker","K","Texas","","n"],["Brandon Aubrey","K","Notre Dame","","n"],["Harrison Butker","K","Georgia Tech","","n"],
+["Michael Dickson","P","Texas","","n"],["KaVontae Turpin","Returner","TCU","","n"],["Devin Hester","Returner","Miami (FL)","","l"]
+];
+const POS={QB:"Quarterback",RB:"Running back",WR:"Wide receiver",TE:"Tight end",OT:"Offensive tackle",G:"Guard",C:"Center",DE:"Defensive end",DT:"Defensive tackle",OLB:"Outside linebacker",LB:"Linebacker",CB:"Cornerback",S:"Safety",K:"Kicker",P:"Punter",Returner:"Return specialist"};
+const SCHOOLS=[...new Set(P.flatMap(p=>[p[2],p[3]]).filter(Boolean))];
+const LIMIT=6000;
+const $=id=>document.getElementById(id);
+let pool="now",deck=[],cur=null,streak=0,best=0,raf=0,t0=0,locked=false;
+
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+const bestKey=()=>"ams-best-"+pool;
+function loadBest(){best=parseInt(store(bestKey())||"0",10)||0;$("best").textContent=best}
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+
+function show(id){["start","play","over"].forEach(s=>$(s).hidden=s!==id)}
+function setStreak(n,bump){$("streak").textContent=n;if(bump){const p=$("patch");p.classList.remove("bump");void p.offsetWidth;p.classList.add("bump")}}
+
+function start(){
+  deck=shuffle(P.filter(p=>pool==="all"||(pool==="now"?p[4]==="n":p[4]==="l")));
+  streak=0;setStreak(0);show("play");next();
+}
+function next(){
+  if(!deck.length){finish("cleared");return}
+  cur=deck.pop();locked=false;
+  $("pos").textContent=POS[cur[1]]||cur[1];
+  $("name").textContent=cur[0];
+  const bad=new Set([cur[2],cur[3]]);
+  const opts=shuffle([cur[2],...shuffle(SCHOOLS.filter(s=>!bad.has(s))).slice(0,3)]);
+  const box=$("choices");box.innerHTML="";
+  opts.forEach((s,i)=>{const b=document.createElement("button");b.type="button";b.dataset.s=s;
+    b.innerHTML='<span class="k">'+(i+1)+'</span>';b.append(s);b.onclick=()=>pick(b);box.append(b)});
+  t0=performance.now();cancelAnimationFrame(raf);tick();
+}
+function tick(){
+  const left=Math.max(0,LIMIT-(performance.now()-t0));
+  $("bar").style.transform="scaleX("+(left/LIMIT)+")";
+  $("clock").classList.toggle("low",left<2000);
+  $("clock").setAttribute("aria-valuenow",Math.ceil(left/1000));
+  if(left<=0){timeout();return}
+  raf=requestAnimationFrame(tick);
+}
+function lockButtons(){[...$("choices").children].forEach(b=>{b.disabled=true;if(b.dataset.s===cur[2])b.classList.add("right")})}
+function pick(b){
+  if(locked)return;locked=true;cancelAnimationFrame(raf);
+  const ok=b.dataset.s===cur[2];lockButtons();
+  if(ok){streak++;setStreak(streak,true);setTimeout(next,550)}
+  else{b.classList.add("wrong");setTimeout(()=>finish("wrong",b.dataset.s),1100)}
+}
+function timeout(){if(locked)return;locked=true;lockButtons();setTimeout(()=>finish("time"),1100)}
+function finish(why,guess){
+  cancelAnimationFrame(raf);
+  if(streak>best){best=streak;store(bestKey(),String(best));$("best").textContent=best}
+  if(why==="cleared"){
+    $("why").textContent="You ran through every player in this pool.";
+    $("reveal").textContent="Perfect run";
+  }else{
+    $("why").textContent=why==="time"?"Out of time on "+cur[0]+".":"Not "+guess+". "+cur[0]+" played at";
+    $("reveal").textContent=cur[2]+(cur[3]?" (also "+cur[3]+")":"");
+    if(why==="time")$("why").textContent+=" He played at";
+  }
+  $("summary").textContent=streak===best&&streak>0?"Streak of "+streak+". New best.":"Streak of "+streak+". Best is "+best+".";
+  show("over");$("again").focus();
+}
+
+document.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{
+  pool=b.dataset.pool;document.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",x===b));loadBest();
+});
+$("go").onclick=start;$("again").onclick=start;
+$("menu").onclick=()=>{setStreak(0);show("start")};
+document.addEventListener("keydown",e=>{
+  if($("play").hidden){if(e.key==="Enter"&&!$("over").hidden){start()}return}
+  const n=parseInt(e.key,10);const bs=$("choices").children;if(n>=1&&n<=bs.length)pick(bs[n-1]);
+});
+$("theme").onclick=()=>{
+  const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==="dark":!matchMedia("(prefers-color-scheme: light)").matches;
+  r.dataset.theme=dark?"light":"dark";store("ams-theme",r.dataset.theme);
+};
+(()=>{const t=store("ams-theme");if(t)document.documentElement.dataset.theme=t})();
+loadBest();
+</script>
+</body>
+</html>
